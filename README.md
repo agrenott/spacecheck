@@ -25,6 +25,14 @@ Monitoring: "/tmp"
 2024-11-30 17:13:09.735084 UTC - POST / - 2.2ms - 200
 ```
 
+Or relying on the docker image:
+
+```
+$ docker run --rm -p 8080:8080 -v /tmp:/monitored_fs:ro ghcr.io/agrenott/spacecheck:latest
+Monitoring: "/monitored_fs"
+2024-11-30 17:12:51.567945 UTC - GET / - 134.6us - 200
+```
+
 ### GET Request
 
 Send a GET request to `http://localhost:8080` to retrieve file system statistics.
@@ -48,6 +56,26 @@ $ curl -v http://127.0.0.1:8080 -H'Content-Type: application/json' -d'{"requeste
 < HTTP/1.1 400 Bad Request
 ...
 {"path":"/tmp","free":11758252032,"available":9329881088,"total":51599257600,"buffer_size":9329881088}
+```
+
+## Docker
+
+The `Dockerfile` in this directory can be used to build a Docker image with the
+service.
+The image is Alpine based to be as small as possible.
+
+### Build
+
+```
+$ docker build -t spacecheck .
+```
+
+### Run
+
+```
+$ docker run --rm -p 8080:8080 -v /tmp:/monitored_fs:ro spacecheck
+Monitoring: "/monitored_fs"
+2024-11-30 17:12:51.567945 UTC - GET / - 134.6us - 200
 ```
 
 ## Dependencies
